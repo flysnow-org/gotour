@@ -13,16 +13,16 @@ func main() {
 	*sp = "飞雪无情"
 	fmt.Println(*sp)
 
-	pp:=NewPerson("飞雪无情",20)
-	fmt.Println("name为",pp.name,",age为",pp.age)
+	pp := NewPerson("飞雪无情", 20)
+	fmt.Println("name为", pp.name, ",age为", pp.age)
 
-	m:= map[string]int{"张三":18}
+	m := map[string]int{"张三": 18}
 	fmt.Println(m)
 
 }
 
-func NewPerson(name string,age int) *person{
-	p:=new(person)
+func NewPerson(name string, age int) *person {
+	p := new(person)
 	p.name = name
 	p.age = age
 	return p
@@ -30,5 +30,5 @@ func NewPerson(name string,age int) *person{
 
 type person struct {
 	name string
-	age int
+	age  int
 }

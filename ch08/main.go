@@ -51,6 +51,6 @@ func main() {
 
 func downloadFile(chanName string) string {
 	//模拟下载文件,可以自己随机time.Sleep点时间试试
-	 time.Sleep(time.Second)
-	return chanName+":filePath"
+	time.Sleep(time.Second)
+	return chanName + ":filePath"
 }

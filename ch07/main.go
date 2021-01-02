@@ -16,8 +16,8 @@ func main() {
 
 	sum, err := add(-1, 2)
 	var cm *commonError
-	if errors.As(err,&cm){
-		fmt.Println("错误代码为:",cm.errorCode,"，错误信息为：",cm.errorMsg)
+	if errors.As(err, &cm) {
+		fmt.Println("错误代码为:", cm.errorCode, "，错误信息为：", cm.errorMsg)
 	} else {
 		fmt.Println(sum)
 	}
@@ -26,16 +26,16 @@ func main() {
 	w := fmt.Errorf("Wrap了一个错误:%w", e)
 	fmt.Println(w)
 	fmt.Println(errors.Unwrap(w))
-	fmt.Println(errors.Is(w,e))
+	fmt.Println(errors.Is(w, e))
 
 	moreDefer()
 
 	defer func() {
-		if p:=recover();p!=nil{
+		if p := recover(); p != nil {
 			fmt.Println(p)
 		}
 	}()
-	connectMySQL("","root","123456")
+	connectMySQL("", "root", "123456")
 }
 
 func add(a, b int) (int, error) {
@@ -48,17 +48,17 @@ func add(a, b int) (int, error) {
 	}
 }
 
-func connectMySQL(ip,username,password string){
-	if ip =="" {
+func connectMySQL(ip, username, password string) {
+	if ip == "" {
 		panic("ip不能为空")
 	}
 	//省略其他代码
 }
 
-func moreDefer(){
-	defer  fmt.Println("First defer")
-	defer  fmt.Println("Second defer")
-	defer  fmt.Println("Three defer")
+func moreDefer() {
+	defer fmt.Println("First defer")
+	defer fmt.Println("Second defer")
+	defer fmt.Println("Three defer")
 	fmt.Println("函数自身代码")
 }
 

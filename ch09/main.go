@@ -6,8 +6,8 @@ import (
 	"time"
 )
 
-var(
-	sum int
+var (
+	sum   int
 	mutex sync.RWMutex
 )
 
@@ -18,7 +18,7 @@ func main() {
 	syncMap()
 }
 
-func run(){
+func run() {
 	var wg sync.WaitGroup
 	//因为要监控110个协程，所以设置计数器为110
 	wg.Add(110)
@@ -29,11 +29,11 @@ func run(){
 			add(10)
 		}()
 	}
-	for i:=0; i<10;i++ {
+	for i := 0; i < 10; i++ {
 		go func() {
 			//计数器值减1
 			defer wg.Done()
-			fmt.Println("和为:",readSum())
+			fmt.Println("和为:", readSum())
 		}()
 	}
 	//一直等待，只要计数器值为0
@@ -58,35 +58,35 @@ func doOnce() {
 }
 
 //10个人赛跑,1个裁判发号施令
-func race(){
-	cond :=sync.NewCond(&sync.Mutex{})
+func race() {
+	cond := sync.NewCond(&sync.Mutex{})
 	var wg sync.WaitGroup
 	wg.Add(11)
-	for i:=0;i<10; i++ {
+	for i := 0; i < 10; i++ {
 		go func(num int) {
-			defer  wg.Done()
-			fmt.Println(num,"号已经就位")
+			defer wg.Done()
+			fmt.Println(num, "号已经就位")
 			cond.L.Lock()
-			cond.Wait()//等待发令枪响
-			fmt.Println(num,"号开始跑……")
+			cond.Wait() //等待发令枪响
+			fmt.Println(num, "号开始跑……")
 			cond.L.Unlock()
 		}(i)
 	}
 	//等待所有goroutine都进入wait状态
-	time.Sleep(2*time.Second)
+	time.Sleep(2 * time.Second)
 	go func() {
-		defer  wg.Done()
+		defer wg.Done()
 		fmt.Println("裁判已经就位，准备发令枪")
 		fmt.Println("比赛开始，大家准备跑")
-		cond.Broadcast()//发令枪响
+		cond.Broadcast() //发令枪响
 	}()
 	wg.Wait()
 }
 
-func syncMap(){
-	syncMap:=sync.Map{}
-	syncMap.Store(1,1)
-	syncMap.Store(1,2)
+func syncMap() {
+	syncMap := sync.Map{}
+	syncMap.Store(1, 1)
+	syncMap.Store(1, 2)
 	fmt.Println(syncMap.Load(1))
 }
 
@@ -99,6 +99,6 @@ func add(i int) {
 func readSum() int {
 	mutex.RLock()
 	defer mutex.RUnlock()
-	b:=sum
+	b := sum
 	return b
 }

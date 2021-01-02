@@ -5,7 +5,6 @@ import (
 	"fmt"
 )
 
-
 func main() {
 	result, err := sum(1, 2)
 	if err != nil {
@@ -27,17 +26,17 @@ func main() {
 	}
 	fmt.Println(sum2(1, 2))
 
-	cl:=colsure()
+	cl := colsure()
 	fmt.Println(cl())
 	fmt.Println(cl())
 	fmt.Println(cl())
 
-	age:=Age(25)
+	age := Age(25)
 	age.String()
 	age.Modify()
 	age.String()
 
-	sm:=Age.String
+	sm := Age.String
 	sm(age)
 }
 
@@ -59,7 +58,7 @@ func sum1(params ...int) int {
 }
 
 func colsure() func() int {
-	i:=0
+	i := 0
 	return func() int {
 		i++
 		return i
@@ -68,10 +67,10 @@ func colsure() func() int {
 
 type Age uint
 
-func (age Age) String(){
-	fmt.Println("the age is",age)
+func (age Age) String() {
+	fmt.Println("the age is", age)
 }
 
-func (age *Age) Modify(){
+func (age *Age) Modify() {
 	*age = Age(30)
 }
