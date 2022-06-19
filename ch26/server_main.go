@@ -1,7 +1,7 @@
 package main
 
 import (
-	"gotour/ch22/server"
+	"gotour/ch26/server"
 	"io"
 	"log"
 	"net"
@@ -30,5 +30,5 @@ func main() {
 		log.Fatal("listen error:", e)
 	}
 
-	http.Serve(l, nil)//换成http的服务
+	http.Serve(l, nil) //换成http的服务
 }

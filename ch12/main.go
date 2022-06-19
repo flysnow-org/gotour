@@ -1,33 +1,58 @@
 package main
 
 import (
-	"fmt"
+	"gotour/ch12/bpool"
 	"io"
 	"os"
+	"sync"
 )
 
 func main() {
-	name := "飞雪无情"
-	nameP := &name //取地址
-	fmt.Println("name变量的值为:", name)
-	fmt.Println("name变量的内存地址为:", nameP, &nameP)
+	var bp = bpool.NewBytePoolCap(500, 1024, 1024)
+	var sp = &sync.Pool{
+		New: func() interface{} {
+			return make([]byte, 1024, 1024)
+		},
+	}
 
-	nameV := *nameP
-	fmt.Println("nameP指针指向的值为:", nameV)
-
-	*nameP = "公众号:飞雪无情" //修改指针指向的值
-	fmt.Println("nameP指针指向的值为:", *nameP)
-	fmt.Println("name变量的值为:", name)
-
-	age := 18
-	modifyAge(&age)
-	fmt.Println("age的值为:", age)
-
-	var w io.Writer = os.Stdout
-	wp := &w
-	fmt.Println(wp)
+	opBytePool(bp)
+	opSyncPool(sp)
 }
 
-func modifyAge(age *int) {
-	*age = 20
+func opBytePool(bp *bpool.BytePoolCap) {
+	var wg sync.WaitGroup
+	wg.Add(500)
+	for i := 0; i < 500; i++ {
+		go func(bp *bpool.BytePoolCap) {
+			buffer := bp.Get()
+			defer bp.Put(buffer)
+			mockReadFile(buffer)
+			wg.Done()
+		}(bp)
+	}
+	wg.Wait()
+}
+
+func opSyncPool(sp *sync.Pool) {
+	var wg sync.WaitGroup
+	wg.Add(500)
+	for i := 0; i < 500; i++ {
+		go func(sp *sync.Pool) {
+			buffer := sp.Get().([]byte)
+			defer sp.Put(buffer)
+			mockReadFile(buffer)
+			wg.Done()
+		}(sp)
+	}
+	wg.Wait()
+}
+
+func mockReadFile(b []byte) {
+	f, _ := os.Open("water")
+	for {
+		n, err := io.ReadFull(f, b)
+		if n == 0 || err == io.EOF {
+			break
+		}
+	}
 }

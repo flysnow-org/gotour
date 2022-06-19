@@ -2,56 +2,39 @@ package main
 
 import (
 	"fmt"
-	"reflect"
 	"unsafe"
 )
 
 func main() {
-	ss := []string{"飞雪无情", "张三"}
-	fmt.Println("切片ss长度为", len(ss), ",容量为", cap(ss))
-	ss = append(ss, "李四", "王五")
-	fmt.Println("切片ss长度为", len(ss), ",容量为", cap(ss))
-	fmt.Println(ss)
+	i := 10
+	ip := &i
 
-	a1 := [2]string{"飞雪无情", "张三"}
-	fmt.Printf("函数main数组指针：%p\n", &a1)
-	arrayF(a1)
+	var fp *float64 = (*float64)(unsafe.Pointer(ip))
+	*fp = *fp * 3
+	fmt.Println(i)
 
-	s1 := a1[0:1]
-	fmt.Println((*reflect.SliceHeader)(unsafe.Pointer(&s1)).Data)
-	sliceF(s1)
+	p := new(person)
+	//Name是person的第一个字段不用偏移，即可通过指针修改
+	pName := (*string)(unsafe.Pointer(p))
+	*pName = "飞雪无情"
+	//Age并不是person的第一个字段，所以需要进行偏移，这样才能正确定位到Age字段这块内存，才可以正确的修改
+	pAge := (*int)(unsafe.Pointer(uintptr(unsafe.Pointer(p)) + unsafe.Offsetof(p.Age)))
+	*pAge = 20
 
-	s2 := a1[:]
-	fmt.Println((*reflect.SliceHeader)(unsafe.Pointer(&s2)).Data)
+	fmt.Println(*p)
 
-	sh1 := (*slice)(unsafe.Pointer(&s1))
-	fmt.Println(sh1.Data, sh1.Len, sh1.Cap)
+	fmt.Println(unsafe.Sizeof(true))
+	fmt.Println(unsafe.Sizeof(int8(0)))
+	fmt.Println(unsafe.Sizeof(int16(10)))
+	fmt.Println(unsafe.Sizeof(int32(10000000)))
+	fmt.Println(unsafe.Sizeof(int64(10000000000000)))
+	fmt.Println(unsafe.Sizeof(int(10000000000000000)))
+	fmt.Println(unsafe.Sizeof(string("飞雪无情")))
+	fmt.Println(unsafe.Sizeof([]string{"飞雪u无情", "张三"}))
 
-	s := "飞雪无情"
-	fmt.Printf("s的内存地址：%d\n", (*reflect.StringHeader)(unsafe.Pointer(&s)).Data)
-	b := []byte(s)
-	fmt.Printf("b的内存地址：%d\n", (*reflect.SliceHeader)(unsafe.Pointer(&b)).Data)
-	sh := (*reflect.SliceHeader)(unsafe.Pointer(&s))
-	sh.Cap = sh.Len
-	b1 := *(*[]byte)(unsafe.Pointer(sh))
-	fmt.Printf("b1的内存地址：%d\n", (*reflect.SliceHeader)(unsafe.Pointer(&b1)).Data)
-	s3 := string(b)
-	fmt.Printf("s3的内存地址：%d\n", (*reflect.StringHeader)(unsafe.Pointer(&s3)).Data)
-	s4 := *(*string)(unsafe.Pointer(&b))
-	fmt.Printf("s4的内存地址：%d\n", (*reflect.StringHeader)(unsafe.Pointer(&s4)).Data)
-	fmt.Println(s, string(b), string(b1), s3)
 }
 
-func arrayF(a [2]string) {
-	fmt.Printf("函数arrayF数组指针：%p\n", &a)
-}
-
-func sliceF(s []string) {
-	fmt.Printf("函数sliceF Data：%d\n", (*reflect.SliceHeader)(unsafe.Pointer(&s)).Data)
-}
-
-type slice struct {
-	Data uintptr
-	Len  int
-	Cap  int
+type person struct {
+	Name string
+	Age  int
 }

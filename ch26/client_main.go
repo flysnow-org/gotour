@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-	"gotour/ch22/server"
+	"gotour/ch26/server"
 	"io"
 	"log"
 	"net"
@@ -13,13 +13,13 @@ import (
 	"net/rpc/jsonrpc"
 )
 
-func main()  {
-	client, err := DialHTTP("tcp",  "localhost:1234")
+func main() {
+	client, err := DialHTTP("tcp", "localhost:1234")
 	if err != nil {
 		log.Fatal("dialing:", err)
 	}
 
-	args := server.Args{A:7,B:8}
+	args := server.Args{A: 7, B: 8}
 	var reply int
 	err = client.Call("MathService.Add", args, &reply)
 	if err != nil {
